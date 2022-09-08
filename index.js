@@ -1,5 +1,6 @@
 const express = require("express");
 const authRoute = require('./routes/auth')
+const uploadRoute = require('./routes/upload')
 const cors = require('cors');
 
 
@@ -16,6 +17,7 @@ app.use(cors(corsOptions));
 
 
 app.use('/api/auth', authRoute)
+app.use('/api/upload', uploadRoute)
 
 
 server.listen(3005, () => {
