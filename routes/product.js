@@ -7,9 +7,7 @@ router.post('/', async (req, res) => {
     try {
         const newProduct = new Product(req.body)
         const savedProduct = await newProduct.save()
-        res.status(200).json({
-            product: savedProduct
-        })
+        res.status(200).send(savedProduct)
     } catch (err) {
         res.status(400).json({ error: err?.errors })
     }
@@ -19,9 +17,7 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const updatedProduct = await Product.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true })
-        res.status(200).json({
-            product: updatedProduct
-        })
+        res.status(200).send(updatedProduct)
     } catch (err) {
         res.status(400).json(err)
     }
@@ -41,11 +37,12 @@ router.delete('/:id', async (req, res) => {
 
 
 router.get('/', async (req, res) => {
+    const page = req.query.page || 1
+    const perPage = 10
     try {
-        const products = await Product.find()
-        res.status(200).json({
-            products
-        })
+        const pages = await Product.estimatedDocumentCount()
+        const products = await Product.find().skip((page - 1) * perPage).limit(perPage)
+        res.status(200).json({ products, pages: Math.floor(pages / perPage) + 1 })
     } catch (err) {
         res.status(400).json(err)
     }

@@ -18,7 +18,8 @@ mongoose.connect('mongodb+srv://giorgi:zxcvbnm123@cluster0.fqu6gce.mongodb.net/t
     console.log('Connected to DB For Real')
 })
 
-
+app.use(express.static('public'));
+app.use('/images', express.static('images'));
 
 app.use('/api/auth', authRoute)
 app.use('/api/upload', uploadRoute)
