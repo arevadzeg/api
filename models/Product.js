@@ -10,11 +10,11 @@ const MoviesSchema = new mongoose.Schema({
         required: true
     },
     image: {
-        type: String,
-        required: true
+        type: [String],
+        default: []
     },
     auctionDate: {
-        type: Number,
+        type: Date,
         required: true
     },
     onGoingPrice: {

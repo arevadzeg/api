@@ -15,7 +15,14 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 router.post('/single', upload.single('image'), async (req, res) => {
-    res.status(200).json({ id: req.file.filename })
+    res.status(200).send([req.file.filename])
+})
+
+
+router.post('/multiple', upload.array('image', 10), async (req, res) => {
+    const names = []
+    req.files.forEach((file) => names.push(file.filename))
+    res.status(200).send(names)
 })
 
 module.exports = router
