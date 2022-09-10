@@ -38,10 +38,19 @@ router.delete('/:id', async (req, res) => {
 
 router.get('/', async (req, res) => {
     const page = req.query.page || 1
+    const search = req.query.search || ""
+    const sort = req.query.sort || ""
     const perPage = 10
+    const descriptionRegex = { 'description': { "$regex": search, "$options": "i" } }
+    const nameRegex = { 'name': { "$regex": search, "$options": "i" } }
     try {
-        const pages = await Product.estimatedDocumentCount()
-        const products = await Product.find().skip((page - 1) * perPage).limit(perPage)
+        const pages = await Product.find(search ? { $or: [descriptionRegex, nameRegex] } : {}).countDocuments()
+        const products = await Product.find(search ? { $or: [descriptionRegex, nameRegex] } : {})
+            .sort({ onGoingPrice: sort })
+            .skip((page - 1) * perPage)
+            .limit(perPage)
+
+
         res.status(200).json({ products, pages: Math.floor(pages / perPage) + 1 })
     } catch (err) {
         res.status(400).json(err)
@@ -49,5 +58,13 @@ router.get('/', async (req, res) => {
 })
 
 
+router.get('/:id', async (req, res) => {
+    try {
+        const products = await Product.findById(req.params.id)
+        res.status(200).json(products)
+    } catch (err) {
+        res.status(400).json(err)
+    }
+})
 
 module.exports = router
