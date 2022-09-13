@@ -1,6 +1,8 @@
 const router = require('express').Router()
 const Product = require('../models/Product')
 const verifyToken = require('../middleware/verifyToken')
+const AutoBid = require('../models/AutoBid')
+const autoBidderLogic = require('../functions/autobidderLogic')
 
 
 router.post('/', async (req, res) => {
@@ -68,12 +70,30 @@ router.get('/:id', async (req, res) => {
 })
 
 router.post('/bid/:id', verifyToken, async (req, res) => {
+
     try {
-        const products = await Product.findById(req.params.id)
-        products.bidHistory.unshift(req.body.bidHistory)
-        products.onGoingPrice = req.body.onGoingPrice
-        await products.save()
+        const product = await Product.findById(req.params.id)
+        product.bidHistory.unshift(req.body.bidHistory)
+        product.onGoingPrice = Number(req.body.onGoingPrice)
+        await product.save()
         res.status(200).json('bid successful')
+        const autoBids = await AutoBid.find({ products: req.params.id })
+        if (autoBids.length === 0) return
+        const allMaxAmounts = []
+        autoBids.map((autoBid) => allMaxAmounts.push({ username: autoBid.username, amount: Number(autoBid.maxAmount / autoBid.products.length) })
+        )
+        allMaxAmounts.sort((a, b) => b.amount - a.amount)
+
+        if (autoBids.length === 1 && allMaxAmounts[0].amount >= (product.onGoingPrice + 1)) {
+            const newBidAmount = Math.floor(Number(req.body.bidHistory.bid) + 1)
+            await autoBidderLogic(allMaxAmounts, product, newBidAmount)
+        }
+        else if (allMaxAmounts[1]?.amount >= (product.onGoingPrice + 1)) {
+            const newBidAmount = Math.floor(allMaxAmounts[1].amount + 1)
+            await autoBidderLogic(allMaxAmounts, product, newBidAmount)
+        } else {
+            return
+        }
     } catch (err) {
         res.status(400).json(err)
     }

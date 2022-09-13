@@ -7,8 +7,10 @@ const verifyToken = (req, res, next) => {
         const token = authHeader.split(" ")[1]
         jwt.verify(token, 'secret', (err, tokenContent) => {
             if (err) res.status(403).json(err)
-            req.user = tokenContent
-            next()
+            else {
+                req.user = tokenContent
+                next()
+            }
         })
     }
     else {

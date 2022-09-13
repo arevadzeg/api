@@ -9,6 +9,7 @@ const verifyAdmin = (req, res, next) => {
             if (tokenContent.role !== 'admin') {
                 res.status(403).json("Only admin users are allowed to make requests")
             }
+            if (err) res.status(403).json(err)
             next()
         })
     }
