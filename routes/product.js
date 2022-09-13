@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const Product = require('../models/Product')
-
+const verifyToken = require('../middleware/verifyToken')
 
 
 router.post('/', async (req, res) => {
@@ -46,7 +46,7 @@ router.get('/', async (req, res) => {
     try {
         const pages = await Product.find(search ? { $or: [descriptionRegex, nameRegex] } : {}).countDocuments()
         const products = await Product.find(search ? { $or: [descriptionRegex, nameRegex] } : {})
-            .sort({ onGoingPrice: sort })
+            .sort(sort ? { onGoingPrice: sort } : {})
             .skip((page - 1) * perPage)
             .limit(perPage)
 
@@ -66,5 +66,20 @@ router.get('/:id', async (req, res) => {
         res.status(400).json(err)
     }
 })
+
+router.post('/bid/:id', verifyToken, async (req, res) => {
+    try {
+        const products = await Product.findById(req.params.id)
+        products.bidHistory.unshift(req.body.bidHistory)
+        products.onGoingPrice = req.body.onGoingPrice
+        await products.save()
+        res.status(200).json('bid successful')
+    } catch (err) {
+        res.status(400).json(err)
+    }
+})
+
+
+
 
 module.exports = router

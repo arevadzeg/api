@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const jwt = require('jsonwebtoken')
 const users = require('../users')
+const verifyToken = require('../middleware/verifyToken')
 
 
 router.post('/login', async (req, res) => {
@@ -14,6 +15,12 @@ router.post('/login', async (req, res) => {
     else {
         res.status(400).json({ msg: 'Invalid credentials' })
     }
+})
+
+
+router.post('/verifyToken', verifyToken, (req, res) => {
+    const { iat, exp, ...data } = req.user
+    res.status(200).json(data)
 })
 
 module.exports = router

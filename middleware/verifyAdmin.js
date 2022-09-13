@@ -3,11 +3,9 @@ const jwt = require('jsonwebtoken')
 
 const verifyAdmin = (req, res, next) => {
     const authHeader = req.headers.authorization
-    console.log(authHeader)
     if (authHeader) {
         const token = authHeader.split(" ")[1]
         jwt.verify(token, 'secret', (err, tokenContent) => {
-            console.log(tokenContent)
             if (tokenContent.role !== 'admin') {
                 res.status(403).json("Only admin users are allowed to make requests")
             }
