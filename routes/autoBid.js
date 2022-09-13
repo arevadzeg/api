@@ -9,10 +9,7 @@ router.post('/', verifyToken, async (req, res) => {
     console.log(autoBidExists)
 
     if (autoBidExists) {
-
         res.status(200).json(autoBidExists)
-
-
     } else {
         try {
             const newAutoBid = new AutoBid({ username: req.user.username, ...req.body })
