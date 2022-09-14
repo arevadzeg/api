@@ -6,10 +6,9 @@ const verifyToken = require('../middleware/verifyToken')
 router.post('/', verifyToken, async (req, res) => {
 
     const autoBidExists = await AutoBid.findOne({ username: req.user.username })
-    console.log(autoBidExists)
-
     if (autoBidExists) {
-        res.status(200).json(autoBidExists)
+        const updatedProduct = await AutoBid.findByIdAndUpdate(autoBidExists._id, { $set: req.body }, { new: true })
+        res.status(200).json(updatedProduct)
     } else {
         try {
             const newAutoBid = new AutoBid({ username: req.user.username, ...req.body })
@@ -19,7 +18,18 @@ router.post('/', verifyToken, async (req, res) => {
             res.status(400).json(err)
         }
     }
-
 })
+
+
+router.get('/', verifyToken, async (req, res) => {
+
+    const autoBidExists = await AutoBid.findOne({ username: req.user.username })
+    if (autoBidExists) {
+        res.status(200).json(autoBidExists)
+    } else {
+        res.status(400).json('Autobid not found')
+    }
+})
+
 
 module.exports = router

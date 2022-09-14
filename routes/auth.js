@@ -2,6 +2,7 @@ const router = require('express').Router()
 const jwt = require('jsonwebtoken')
 const users = require('../users')
 const verifyToken = require('../middleware/verifyToken')
+require('dotenv').config({ path: '../.env' });
 
 
 router.post('/login', async (req, res) => {
@@ -9,7 +10,7 @@ router.post('/login', async (req, res) => {
     const user = users[req.body.username]
     if (user && user.password === req.body.password) {
         const { password, ...userInfo } = user
-        const accessToken = jwt.sign({ ...userInfo }, 'secret', { expiresIn: '5d' })
+        const accessToken = jwt.sign({ ...userInfo }, process.env.SECRET_KEY, { expiresIn: '5d' })
         res.status(201).json({ userInfo, access_token: accessToken })
     }
     else {

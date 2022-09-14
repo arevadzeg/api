@@ -7,6 +7,7 @@ const cors = require('cors');
 const mongoose = require('mongoose')
 const http = require('http')
 const listener = require('./autoBidListener.js')
+require('dotenv').config({ path: './.env' });
 
 const app = express()
 const server = http.createServer(app)
@@ -16,7 +17,8 @@ const corsOptions = {
     optionsSuccessStatus: 200
 }
 app.use(cors(corsOptions));
-mongoose.connect('mongodb+srv://giorgi:zxcvbnm123@cluster0.fqu6gce.mongodb.net/test').then(() => {
+
+mongoose.connect(process.env.MONGO_DB_CONNECTION).then(() => {
     console.log('Connected to DB For Real')
 })
 
