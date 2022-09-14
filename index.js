@@ -6,7 +6,6 @@ const autoBid = require('./routes/autoBid')
 const cors = require('cors');
 const mongoose = require('mongoose')
 const http = require('http')
-const listener = require('./autoBidListener.js')
 require('dotenv').config({ path: './.env' });
 
 const app = express()
@@ -22,7 +21,6 @@ mongoose.connect(process.env.MONGO_DB_CONNECTION).then(() => {
     console.log('Connected to DB For Real')
 })
 
-// listener()
 
 app.use(express.static('public'));
 app.use('/images', express.static('images'));

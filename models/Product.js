@@ -21,6 +21,10 @@ const MoviesSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    active: {
+        type: Boolean,
+        default: true,
+    },
     bidHistory: {
         type: [{ bid: Number, bidder: String, price: Number }]
     }

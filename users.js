@@ -19,6 +19,11 @@ const users = {
         username: 'user2',
         password: 'user2'
     },
+    'user3': {
+        role: 'user',
+        username: 'user3',
+        password: 'user3'
+    },
 }
 
 

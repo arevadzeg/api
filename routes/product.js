@@ -3,6 +3,7 @@ const Product = require('../models/Product')
 const verifyToken = require('../middleware/verifyToken')
 const AutoBid = require('../models/AutoBid')
 const autoBidderLogic = require('../functions/autobidderLogic')
+const schedule = require('node-schedule');
 
 
 router.post('/', async (req, res) => {
@@ -10,6 +11,9 @@ router.post('/', async (req, res) => {
         const newProduct = new Product(req.body)
         const savedProduct = await newProduct.save()
         res.status(200).send(savedProduct)
+        schedule.scheduleJob(savedProduct.auctionDate, async () => {
+            const res = await Product.findByIdAndUpdate(savedProduct._id, { $set: { active: false } }, { new: true })
+        })
     } catch (err) {
         res.status(400).json({ error: err?.errors })
     }

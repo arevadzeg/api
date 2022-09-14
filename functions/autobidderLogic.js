@@ -2,6 +2,7 @@ const AutoBid = require("../models/AutoBid")
 
 
 const setterFunction = async (allMaxAmounts, product, newBidAmount) => {
+
     const newPrice = product.onGoingPrice + newBidAmount
     const newAutoBid = {
         bidder: allMaxAmounts[0].username,
@@ -14,7 +15,6 @@ const setterFunction = async (allMaxAmounts, product, newBidAmount) => {
 }
 
 const autoBidderLogic = async (product, id, latestBid) => {
-
     const autoBids = await AutoBid.find({ products: id })
     if (autoBids.length === 0) return
     const allMaxAmounts = []
@@ -26,7 +26,7 @@ const autoBidderLogic = async (product, id, latestBid) => {
         await setterFunction(allMaxAmounts, product, newBidAmount)
     }
     else if (allMaxAmounts[1]?.amount >= (product.onGoingPrice + 1)) {
-        const newBidAmount = Math.floor(allMaxAmounts[1].amount + 1)
+        const newBidAmount = Math.floor(allMaxAmounts[1].amount + 1 - product.onGoingPrice)
         await setterFunction(allMaxAmounts, product, newBidAmount)
     } else {
         return
