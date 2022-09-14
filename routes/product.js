@@ -1,12 +1,13 @@
 const router = require('express').Router()
 const Product = require('../models/Product')
 const verifyToken = require('../middleware/verifyToken')
+const verifyAdmin = require('../middleware/verifyAdmin')
 const AutoBid = require('../models/AutoBid')
 const autoBidderLogic = require('../functions/autobidderLogic')
 const schedule = require('node-schedule');
 
 
-router.post('/', async (req, res) => {
+router.post('/', verifyAdmin, async (req, res) => {
     try {
         const newProduct = new Product(req.body)
         const savedProduct = await newProduct.save()
@@ -20,7 +21,7 @@ router.post('/', async (req, res) => {
 })
 
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', verifyAdmin, async (req, res) => {
     try {
         const updatedProduct = await Product.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true })
         res.status(200).send(updatedProduct)
@@ -30,7 +31,7 @@ router.put('/:id', async (req, res) => {
 })
 
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', verifyAdmin, async (req, res) => {
     try {
         const updatedProduct = await Product.findByIdAndDelete(req.params.id, { new: true })
         res.status(200).json({
