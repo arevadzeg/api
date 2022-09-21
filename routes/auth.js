@@ -1,13 +1,15 @@
 const router = require('express').Router()
 const jwt = require('jsonwebtoken')
 const users = require('../users')
-const verifyToken = require('../middleware/verifyToken')
+const verifyToken = require('../middleware/verifyToken');
+const User = require('../models/User');
 require('dotenv').config({ path: '../.env' });
 
 
 router.post('/login', async (req, res) => {
 
-    const user = users[req.body.username]
+    const user = await User.findOne({ 'username': req.body.username })
+
     if (user && user.password === req.body.password) {
         const { password, ...userInfo } = user
         const accessToken = jwt.sign({ ...userInfo }, process.env.SECRET_KEY, { expiresIn: '5d' })
