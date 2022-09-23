@@ -9,7 +9,6 @@ require('dotenv').config({ path: '../.env' });
 router.post('/login', async (req, res) => {
 
     const user = await User.findOne({ 'username': req.body.username }).populate('bidHistory', { strictPopulate: false })
-    console.log(user)
 
     if (user && user.password === req.body.password) {
         const { password, ...userInfo } = user._doc
