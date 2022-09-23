@@ -5,6 +5,7 @@ const verifyAdmin = require('../middleware/verifyAdmin')
 const AutoBid = require('../models/AutoBid')
 const autoBidderLogic = require('../functions/autobidderLogic')
 const schedule = require('node-schedule');
+const User = require('../models/User')
 
 
 router.post('/', verifyAdmin, async (req, res) => {
@@ -78,9 +79,14 @@ router.post('/bid/:id', verifyToken, async (req, res) => {
 
     try {
         const product = await Product.findById(req.params.id)
+        const user = await User.findById(req.user.id)
         product.bidHistory.unshift(req.body.bidHistory)
         product.onGoingPrice = Number(req.body.onGoingPrice)
+        if (!user.bidHistory.includes(req.params.id)) {
+            user.bidHistory.push(req.params.id)
+        }
         await product.save()
+        await user.save()
         res.status(200).json('bid successful')
         await autoBidderLogic(product, req.params.id, req.body.bidHistory.bid)
     } catch (err) {

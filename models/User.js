@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema({
     },
 
     bidHistory: {
-        type: [{ _id: String, status: String, price: Number }]
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'products' }]
     }
 
 }, { timestamps: true })
