@@ -75,6 +75,15 @@ router.get('/:id', async (req, res) => {
     }
 })
 
+router.get('/bidhistory/:id', async (req, res) => {
+    try {
+        const products = await Product.findById(req.params.id)
+        res.status(200).json(products.bidHistory)
+    } catch (err) {
+        res.status(400).json(err)
+    }
+})
+
 router.post('/bid/:id', verifyToken, async (req, res) => {
 
     try {
