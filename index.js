@@ -10,12 +10,36 @@ require('dotenv').config({ path: './.env' });
 
 const app = express()
 const server = http.createServer(app)
+const { Server } = require('socket.io')
+
 app.use(express.json());
 const corsOptions = {
     origin: 'http://localhost:3000',
     optionsSuccessStatus: 200
 }
 app.use(cors(corsOptions));
+
+const io = new Server(server, {
+    cors: {
+        origin: 'http://localhost:3000',
+
+    }
+})
+io.on('connection', (socket) => {
+    socket.on('joinRoom', (room) => {
+        console.log(room)
+        socket.join(room)
+    })
+    socket.on('disconnect', (room) => {
+        socket.leave(room)
+    })
+})
+
+app.use(function (req, res, next) {
+    res.io = io;
+    next();
+});
+
 
 mongoose.connect(process.env.MONGO_DB_CONNECTION).then(() => {
     console.log('Connected to DB For Real')

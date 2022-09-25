@@ -88,17 +88,21 @@ router.post('/bid/:id', verifyToken, async (req, res) => {
 
     try {
         const product = await Product.findById(req.params.id)
-        const user = await User.findById(req.user.id)
+        const user = await User.findById(req.user._id)
         product.bidHistory.unshift(req.body.bidHistory)
         product.onGoingPrice = Number(req.body.onGoingPrice)
         if (!user.bidHistory.includes(req.params.id)) {
             user.bidHistory.push(req.params.id)
         }
+        res.io.to(req.params.id).emit('bidPlaced', { newPrice: req.body.onGoingPrice, newBidHistory: product.bidHistory })
         await product.save()
         await user.save()
+        console.log('aqamde tu movida')
+
+        await autoBidderLogic(product, req.params.id, req.body.bidHistory.bid, res.io)
         res.status(200).json('bid successful')
-        await autoBidderLogic(product, req.params.id, req.body.bidHistory.bid)
     } catch (err) {
+        console.log(err)
         res.status(400).json(err)
     }
 })
