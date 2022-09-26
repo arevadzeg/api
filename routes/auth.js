@@ -11,7 +11,7 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ 'username': req.body.username }).populate('bidHistory', { strictPopulate: false })
 
     if (user && user.password === req.body.password) {
-        const { password, ...userInfo } = user._doc
+        const { password, bidHistory, ...userInfo } = user._doc
         const accessToken = jwt.sign({ ...userInfo }, process.env.SECRET_KEY, { expiresIn: '5d' })
         res.status(201).json({ userInfo, access_token: accessToken })
     }
