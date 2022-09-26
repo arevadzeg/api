@@ -1,7 +1,11 @@
 
 const nodemailer = require('nodemailer')
+const fs = require('fs');
+const path = require('path');
+const handlebars = require('handlebars')
 
-const sendMail = async (email) => {
+const sendMail = async (email, subject, template, data) => {
+    console.log(email, subject, template, data)
     const transporter = nodemailer.createTransport({
         service: "Outlook365",
         host: "smtp.office365.com",
@@ -13,15 +17,19 @@ const sendMail = async (email) => {
         }
     });
 
-    let info = await transporter.sendMail({
+    await transporter.sendMail({
         from: 'auction-app-123-431@outlook.com',
         to: email,
-        subject: "TEST",
-        text: "TEST",
-        html: `<h1>Zd dzma meige
-        <button>Click me</button>
-        </h1>`
+        subject,
+        html: await generateEmailHtml(template, data)
     });
+}
+
+const generateEmailHtml = async (view, data) => {
+    const html = await fs.promises.readFile(path.join(__dirname, `../views/${view}.hbs`));
+    const template = handlebars.compile(html.toString());
+
+    return template(data);
 }
 
 module.exports = sendMail

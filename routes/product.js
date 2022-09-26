@@ -6,6 +6,7 @@ const AutoBid = require('../models/AutoBid')
 const autoBidderLogic = require('../functions/autobidderLogic')
 const schedule = require('node-schedule');
 const User = require('../models/User')
+const sendMail = require('../services/mailerService')
 
 
 router.post('/', verifyAdmin, async (req, res) => {
@@ -93,16 +94,21 @@ router.post('/bid/:id', verifyToken, async (req, res) => {
         product.onGoingPrice = Number(req.body.onGoingPrice)
         if (!user.bidHistory.includes(req.params.id)) {
             user.bidHistory.push(req.params.id)
+            const data = {
+                productLink: `http://localhost:3000/auction/${req.params.id}`,
+                username: req.user.username,
+                price: product.onGoingPrice,
+                productName: product.name
+            }
+            const subject = 'Bid placed on product'
+            await sendMail(req.user.email, subject, 'bidPlaced', data)
         }
         res.io.to(req.params.id).emit('bidPlaced', { newPrice: req.body.onGoingPrice, newBidHistory: product.bidHistory })
         await product.save()
         await user.save()
-        console.log('aqamde tu movida')
-
         await autoBidderLogic(product, req.params.id, req.body.bidHistory.bid, res.io)
         res.status(200).json('bid successful')
     } catch (err) {
-        console.log(err)
         res.status(400).json(err)
     }
 })
