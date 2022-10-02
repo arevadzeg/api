@@ -7,6 +7,8 @@ const autoBidderLogic = require('../functions/autobidderLogic')
 const schedule = require('node-schedule');
 const User = require('../models/User')
 const sendMail = require('../services/mailerService')
+const puppeteer = require('puppeteer')
+const generateInvoicePDF = require('../services/generateInvoicePDF')
 
 
 router.post('/', verifyAdmin, async (req, res) => {
@@ -15,7 +17,13 @@ router.post('/', verifyAdmin, async (req, res) => {
         const savedProduct = await newProduct.save()
         res.status(200).send(savedProduct)
         schedule.scheduleJob(savedProduct.auctionDate, async () => {
-            const res = await Product.findByIdAndUpdate(savedProduct._id, { $set: { active: false } }, { new: true })
+            const updatedProduct = await Product.findById(savedProduct._id)
+            const winner = updatedProduct.bidHistory[0].bidder
+            updatedProduct.active = false
+            updatedProduct.winner = winner
+            const invoiceId = generateInvoicePDF()
+            const invoiceURL = `http://localhost:3005/invoices/${invoiceId}.pdf`
+            const res = await Product.findByIdAndUpdate(savedProduct._id, { $set: { active: false, winner, invoice: invoiceURL } }, { new: true })
         })
     } catch (err) {
         res.status(400).json({ error: err?.errors })
@@ -58,7 +66,7 @@ router.get('/', async (req, res) => {
             .sort(sort ? { onGoingPrice: sort } : {})
             .skip((page - 1) * perPage)
             .limit(perPage)
-
+            .select("-invoice")
 
         res.status(200).json({ products, pages: Math.floor(pages / perPage) + 1 })
     } catch (err) {

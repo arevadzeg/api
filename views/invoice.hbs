@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+
+</head>
+<style>
+    body {
+        padding: 30px;
+    }
+
+    .invoice-pdf-invoice-id {
+        font-weight: 700;
+        font-size: 22px;
+        color: #000;
+    }
+
+    .invoice-pdf-invoice-date span {
+        font-weight: 400;
+    }
+
+    .invoice-pdf-invoice-date {
+        font-family: 'Poppins';
+        font-size: 14px;
+        font-weight: 400;
+        color: #190e2f;
+    }
+
+    .invoice-pdf-bill-title {
+        padding-top: 28px;
+        font-family: 'Poppins';
+        font-size: 14px;
+        font-weight: 700;
+        color: #c1bfc5;
+        margin-top: 28px;
+    }
+
+    .invoice-pdf-bill-title p {
+        color: #000;
+    }
+
+    .invoice-envite-logo {
+        height: 45px;
+    }
+
+    .invoice-pdf-service-name {
+        font-family: 'Poppins';
+        font-size: 14px;
+        color: #190e2f;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .invoice-header-text {
+        font-family: 'Poppins';
+        font-size: 14px;
+        color: #c1bfc5;
+        font-weight: 500;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    thead {
+        font-family: 'Poppins';
+        font-size: 14px;
+        font-weight: 700;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1;
+        letter-spacing: 1px;
+        color: #c1bfc5;
+        border-bottom: solid 1px rgba(218, 219, 221, 0.8);
+    }
+
+    td {
+        font-family: 'Poppins';
+        font-size: 14px;
+        font-weight: 400;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1;
+        letter-spacing: normal;
+        text-align: left;
+        color: #190e2f;
+    }
+
+
+    table {
+        border-collapse: collapse;
+    }
+
+    .body-table {
+        border-top: solid 1px rgba(218, 219, 221, 0.8);
+    }
+
+    .invoice-modal-body-description {
+        border-top: solid 1px rgba(218, 219, 221, 0.8);
+        border-bottom: solid 1px rgba(218, 219, 221, 0.8);
+    }
+
+
+    .table-with-padding {
+        font-weight: 400;
+        padding-bottom: 8px;
+    }
+
+    .invoice-modal-body-title table td {
+        padding-bottom: 15px;
+        padding-top: 15px;
+        text-align: center;
+    }
+
+    .inovoice-pdf-details__text {
+        font-family: 'Poppins';
+        font-size: 14px;
+        font-weight: 700;
+        color: #000;
+    }
+
+    .table-bold-title {
+        font-weight: 700;
+    }
+
+    .invoice-pdf-details__wrapper table {
+        background-color: rgba(244, 244, 244, 0.7);
+    }
+
+    .invoice-pdf-details__wrapper th,
+    .invoice-pdf-details__wrapper td {
+        padding-bottom: 15px;
+        padding-top: 15px;
+        padding-left: 30px;
+        font-size: 14px;
+    }
+
+    .bold {
+        font-weight: 700;
+    }
+
+
+    .footer-table__wrapper {
+        margin-top: 45px;
+        margin-right: 15px;
+    }
+
+    .footer-table__wrapper td {
+        float: right;
+    }
+
+
+    .capitalize {
+        text-transform: capitalize;
+    }
+
+    .little-font {
+        font-size: 10px;
+    }
+
+    .invoice-pdf-img {
+        max-height: 130px;
+        max-width: 130px;
+        text-align: center;
+    }
+</style>
+
+<body>
+
+    <table>
+        <tbody>
+            <tr>
+                <td class="invoice-pdf-invoice-id"> INVOICE # {{invoiceId}}</td>
+                <td><img src='http://localhost:3005/images/logo.png' alt='Logo' class="invoice-envite-logo" />
+                </td>
+            </tr>
+
+            <tr>
+                <td class="invoice-pdf-invoice-date"> <span>Invoice date:</span> {{date}}</td>
+            </tr>
+
+            <tr>
+                <td class="invoice-pdf-bill-title">Bill to <p>{{username}}</p>
+                    <p>{{email}}</p>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    <div class="invoice-modal-body-wrapper">
+
+        <div class="invoice-modal-body-title">
+            <table class="body-table">
+                <thead>
+                    <tr>
+                        <th class="invoice-header-text">Name</th>
+                        <th class="invoice-header-text">Image</th>
+                        <th class="invoice-header-text">Price</th>
+                        <th class="invoice-header-text">Total</th>
+                    </tr>
+                </thead>
+                <tbody class="">
+                    <tr class="invoice-modal-body-description">
+                        <td>{{productName}}</td>
+                        <td class="invoice-pdf-service-name">
+                            <img src="http://localhost:3005/images/1663149527575.jpg" class="invoice-pdf-img"
+                                alt=" No Image" />
+                        </td>
+                        <td>{{price}} USD</td>
+                        <td>{{price}} USD</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td class="table-bold-title">Total paid:</td>
+                        <td class="table-bold-title">{{amount}} USD</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <table class="footer-table__wrapper">
+            <tr class="bold">
+                <td>
+                    <p class="bold">Thank You!</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p class="bold">Auction app</p>
+                </td>
+            </tr>
+        </table>
+</body>
+
+</html>

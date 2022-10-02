@@ -48,6 +48,7 @@ mongoose.connect(process.env.MONGO_DB_CONNECTION).then(() => {
 
 app.use(express.static('public'));
 app.use('/images', express.static('images'));
+app.use('/invoices', express.static('invoices'));
 
 app.use('/api/auth', authRoute)
 app.use('/api/upload', uploadRoute)

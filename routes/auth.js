@@ -3,12 +3,16 @@ const jwt = require('jsonwebtoken')
 const users = require('../users')
 const verifyToken = require('../middleware/verifyToken');
 const User = require('../models/User');
+const generateInvoicePDF = require('../services/generateInvoicePDF');
 require('dotenv').config({ path: '../.env' });
 
 
 router.post('/login', async (req, res) => {
 
     const user = await User.findOne({ 'username': req.body.username }).populate('bidHistory', { strictPopulate: false })
+
+    const x = await generateInvoicePDF('giotest9797@gmail.com', 'username', 123, 'productName')
+    console.log(x)
 
     if (user && user.password === req.body.password) {
         const { password, bidHistory, ...userInfo } = user._doc

@@ -25,6 +25,14 @@ const ProductSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
     },
+    winner: {
+        type: String,
+        default: null
+    },
+    invoice: {
+        type: String,
+        default: ""
+    },
     bidHistory: {
         type: [{ bid: Number, bidder: String, price: Number }]
     }
