@@ -27,7 +27,6 @@ const io = new Server(server, {
 })
 io.on('connection', (socket) => {
     socket.on('joinRoom', (room) => {
-        console.log(room)
         socket.join(room)
     })
     socket.on('disconnect', (room) => {

@@ -5,7 +5,6 @@ const path = require('path');
 const handlebars = require('handlebars')
 
 const sendMail = async (email, subject, template, data) => {
-    console.log(email, subject, template, data)
     const transporter = nodemailer.createTransport({
         service: "Outlook365",
         host: "smtp.office365.com",
