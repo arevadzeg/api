@@ -102,7 +102,7 @@ router.post('/bid/:id', verifyToken, async (req, res) => {
                 productName: product.name
             }
             const subject = 'Bid placed on product'
-            await sendMail(req.user.email, subject, 'bidPlaced', data)
+            sendMail(req.user.email, subject, 'bidPlaced', data)
         }
         res.io.to(req.params.id).emit('bidPlaced', { newPrice: req.body.onGoingPrice, newBidHistory: product.bidHistory })
         await product.save()

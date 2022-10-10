@@ -11,8 +11,8 @@ const sendMail = async (email, subject, template, data) => {
         port: "587",
 
         auth: {
-            user: 'auction-app-123-431@outlook.com',
-            pass: 'Zxcvbnm123'
+            user: process.env.EMAIL,
+            pass: process.env.PASSWORD
         }
     });
 
