@@ -23,6 +23,18 @@ router.post('/login', async (req, res) => {
     }
 })
 
+router.get('/user', verifyToken, async (req, res) => {
+
+    const user = await User.findById(req.user._id).populate('bidHistory', { strictPopulate: false })
+    if (user) {
+        const { password, ...userInfo } = user._doc
+        res.status(201).json(userInfo)
+    }
+    else {
+        res.status(400).json({ msg: 'user not found' })
+    }
+})
+
 
 router.post('/verifyToken', verifyToken, (req, res) => {
     const { iat, exp, ...data } = req.user

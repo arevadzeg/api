@@ -17,7 +17,7 @@ router.post('/', verifyAdmin, async (req, res) => {
         const newProduct = new Product(req.body)
         const savedProduct = await newProduct.save()
         res.status(200).send(savedProduct)
-        handleBiddingFinished(savedProduct._id)
+        handleBiddingFinished(savedProduct._id, savedProduct.auctionDate)
     } catch (err) {
         res.status(400).json({ error: err?.errors })
     }
